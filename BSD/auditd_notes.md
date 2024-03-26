@@ -27,6 +27,7 @@ You can also add a few prefixes to these flags to control what is audited:
   - ^ \(neither successful nor failed events\)
   - ^\+ \(don't audit successful events\)
   - ^\- \(don't audit failed events\)
+
 For example, if you wanted to audit failed authentication, all login/logoff, and successful program execution, you would set the "flags" option to `-aa,lo,+ex`.
 
 If you are ever curious about what triggers each flag, you can browse through `/etc/security/audit_events` to see what each flag corresponds to.
