@@ -1,18 +1,18 @@
 # Getting started with auditd
-As opposed to other operating systems, bsd comes with auditd functionality preinstalled.  All you have to do is set it up.  To set it up, add the following line to `/etc/rc.conf`: `auditd_enable="YES"`.  Then, all you have to do is run `service auditd start` and you are now auditing your bsd machine!
+As opposed to other operating systems, BSD comes with auditd functionality preinstalled.  All you have to do is set it up.  To set it up, add the following line to `/etc/rc.conf`: `auditd_enable="YES"`.  Then, all you have to do is run `service auditd start` and you are now auditing your BSD machine!
 
 # Configuring auditd
 Auditd looks almost unidentifiable on BSD.  This is due to it being a custom version of auditd.  To start with, there is no `/etc/audit` directory where you stoore all of your rules.  In fact, there is no way to really create a rule.  Instead you must rely on the builtin event classes and decide which classes to audit for which users.  The main way you configure the auditd service is by editing the file `/etc/securty/audit_control`
 
 ## audit\_control
-This is the most important file when setting up auditd on your bsd machine.  It controls the global options for auditd, meaning these settings will apply to all users, even system/service users.  The important ones to look at are:
+This is the most important file when setting up auditd on your BSD machine.  It controls the global options for auditd, meaning these settings will apply to all users, even system/service users.  The important ones to look at are:
   - dir
   - flags
   - policy
 The dir option controls where your log files are stored.  You can change this if you want, but all a threat actor would have to do to find the logs is view this file.  The flags option is how you specify what to audit, which I will go into momentarily.  Finally, the policy controls how it audits the machine
 
 ### flags
-There are 20 flags in total, so I will not go into them all, but you can find them all [in the bsd docs](https://docs.freebsd.org/en/books/handbook/audit/#audit-config).  I recommend briefly reading through this page anyway as it is very helpful.  A few key flags are:
+There are 20 flags in total, so I will not go into them all, but you can find them all [in the BSD docs](https://docs.freebsd.org/en/books/handbook/audit/#audit-config).  I recommend briefly reading through this page anyway as it is very helpful.  A few key flags are:
   - lo \(login and logoff\)
   - aa \(authentication and authorization\)
   - ad \(administrative actions\)
@@ -55,7 +55,7 @@ Okay, so auditd is great and all, but if you are managing 50+ machines, you don'
 
 After some testing, I figured out a way to do just that.  I believe this is the intended way, but I couldn't find any documentation/forum posts about this.  I looked at the man page for `praudit` and discovered another option it has: `-p`. This allows `praudit` to take piped input from the command `tail`.  After I saw this, the solution was obvious.  In order to record all auditd logs in human readable format that can be forwarded, run this command: `tail -f -n 0 /var/audit/current | praudit -pl >> /var/log/audit.log &`.  This command converts all new auditd logs into human readable logs and stores them in `/var/log/audit.log`.  It also runs in the background and you can check it with the `jobs` command on the terminal you ran it from.  You can also look for it in the process list.
 
-I would recommed creating a custom rc service to start this when the system starts up after auditd starts.  This way you capture every auditd log you can.  I have created one you can use in this directory called `convert`.  Simply paste this into your `/etc/rc.d/` directory and you can start the service.  For a comprehensive explanation on what this file does read [this page](https://docs.freebsd.org/en/articles/rc-scripting/) from the bsd documentation.
+I would recommed creating a custom rc service to start this when the system starts up after auditd starts.  This way you capture every auditd log you can.  I have created one you can use in this directory called `convert`.  Simply place this in your `/etc/rc.d/` directory, make it executable, and you can start the service.  For a comprehensive explanation on what this file does read [this page](https://docs.freebsd.org/en/articles/rc-scripting/) from the BSD documentation.
 
 # Compatibility with Wazuh
-Even though, according to them, bsd is not officially supported by Wazuh, it can be installed onto the machine without much trouble.  From here on out, this page will only be applicable if you are using Wazuh as your SIEM.  I could not find neither custom rules nor decoders written for BSD's version of auditd, so I decided to write them myself.  So far, I have created a decoder that decodes ssh logins, execve calls, and file write operations.  I have not yet created the rules based off the decoded logs, but they will be coming soon.  The decoder is included in this directory as the `AuditdBSD.xml` file. 
+Even though, according to them, BSD is not officially supported by Wazuh, it can be installed onto the machine without much trouble.  From here on out, this page will only be applicable if you are using Wazuh as your SIEM.  I could not find neither custom rules nor decoders written for BSD's version of auditd, so I decided to write them myself.  So far, I have created a decoder that decodes ssh logins, execve calls, and file write operations.  I have not yet created the rules based off the decoded logs, but they will be coming soon.  The decoder is included in this directory as the `AuditdBSD.xml` file. 
