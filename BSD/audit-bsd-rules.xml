@@ -1,0 +1,12 @@
+<group name="auditbsd">
+  <rule id="100500" level="0">
+    <decoded_as>auditbsd-syscall</decoded_as>
+    <description>group auditbsd syscall rules</description>
+  </rule>
+
+  <rule id="100501" level="5">
+    <if_sid>100500</if_sid>
+    <field name="audit.binary_path">nc|</field>
+    <description>Test rule to see if log is forwarding</description>
+  </rule>
+</group>
