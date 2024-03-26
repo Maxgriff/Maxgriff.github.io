@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# PROVIDE: convert
+# REQUIRE: auditd
+# BEFORE: sshd
+
+. /etc/rc.subr
+
+name="convert"
+rcvar=${name}_enable
+
+start_cmd="${name}_start"
+stop_cmd=":"
+
+load_rc_config $name
+: ${convert_enable:=yes}
+
+convert_start()
+{
+  tail -f -n 0 /var/audit/current | praudit -lp >> /var/log/audit.log &
+}
+
+run_rc_command "$1"
