@@ -2,13 +2,14 @@
 As opposed to other operating systems, BSD comes with auditd functionality preinstalled.  All you have to do is set it up.  To set it up, add the following line to `/etc/rc.conf`: `auditd_enable="YES"`.  Then, all you have to do is run `service auditd start` and you are now auditing your BSD machine!
 
 # Configuring auditd
-Auditd looks almost unidentifiable on BSD.  This is due to it being a custom version of auditd.  To start with, there is no `/etc/audit` directory where you stoore all of your rules.  In fact, there is no way to really create a rule.  Instead you must rely on the builtin event classes and decide which classes to audit for which users.  The main way you configure the auditd service is by editing the file `/etc/securty/audit_control`
+Auditd looks almost unidentifiable on BSD.  This is due to it being a custom version of auditd.  To start with, there is no `/etc/audit` directory where you store all of your rules.  In fact, there is no way to really create a rule.  Instead you must rely on the builtin event classes and decide which classes to audit for which users.  The main way you configure the auditd service is by editing the file `/etc/securty/audit_control`
 
 ## audit\_control
 This is the most important file when setting up auditd on your BSD machine.  It controls the global options for auditd, meaning these settings will apply to all users, even system/service users.  The important ones to look at are:
   - dir
   - flags
   - policy
+
 The dir option controls where your log files are stored.  You can change this if you want, but all a threat actor would have to do to find the logs is view this file.  The flags option is how you specify what to audit, which I will go into momentarily.  Finally, the policy controls how it audits the machine
 
 ### flags
