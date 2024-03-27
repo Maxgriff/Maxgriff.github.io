@@ -26,9 +26,12 @@ li.link {
     margin-bottom: 10px;
 }
 
+a {
+    color: #0070cc;
+}
+
 a.link {
     text-decoration: none;
-    color: #007bff;
     display: block;
     padding: 10px;
     border-radius: 5px;
