@@ -17,7 +17,7 @@ function renderMarkdown(markdownFilePath) {
 }
 
 // Get the path to the Markdown file from the script tag's data attribute
-var markdownPath = document.currentScript.getAttribute('data-markdown-path');
+var markdownPath = document.currentScript.getAttribute('markdown-path');
 
 // Call renderMarkdown function with the Markdown file path
 renderMarkdown(markdownPath);
