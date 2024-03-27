@@ -57,7 +57,22 @@ Okay, so auditd is great and all, but if you are managing 50+ machines, you don'
 
 After some testing, I figured out a way to do just that.  I believe this is the intended way, but I couldn't find any documentation/forum posts about this.  I looked at the man page for `praudit` and discovered another option it has: `-p`. This allows `praudit` to take piped input from the command `tail`.  After I saw this, the solution was obvious.  In order to record all auditd logs in human readable format that can be forwarded, run this command: `tail -f -n 0 /var/audit/current | praudit -pl >> /var/log/audit.log &`.  This command converts all new auditd logs into human readable logs and stores them in `/var/log/audit.log`.  It also runs in the background and you can check it with the `jobs` command on the terminal you ran it from.  You can also look for it in the process list.
 
-I would recommed creating a custom rc service to start this when the system starts up after auditd starts.  This way you capture every auditd log you can.  I have created one you can use in this directory called `convert`.  Simply place this in your `/etc/rc.d/` directory, make it executable, and you can start the service.  For a comprehensive explanation on what this file does read [this page](https://docs.freebsd.org/en/articles/rc-scripting/) from the BSD documentation.
+I would recommed creating a custom rc service to start this when the system starts up after auditd starts.  This way you capture every auditd log you can.  I have created one you can use and you can find it [here](https://github.com/Maxgriff/Maxgriff.github.io/blob/main/BSD/files/convert) and download it [here](convert).  Simply place this in your `/etc/rc.d/` directory, make it executable, and you can start the service.  For a comprehensive explanation on what this file does read [this page](https://docs.freebsd.org/en/articles/rc-scripting/) from the BSD documentation.
 
 # Compatibility with Wazuh
-Even though, according to Wazuh, BSD is not officially supported by Wazuh, it can be installed onto the machine without much trouble.  From here on out, this page will only be applicable if you are using Wazuh as your SIEM.  I could not find neither custom rules nor decoders written for BSD's version of auditd, so I decided to write them myself.  So far, I have created a decoder that decodes ssh logins, execve calls, and file write operations.  I have not yet created the rules based off the decoded logs, but they will be coming soon.  The decoder is included in this directory as the `AuditdBSD.xml` file. 
+Even though, according to Wazuh, BSD is not officially supported by Wazuh, it can be installed onto the machine without much trouble.  From here on out, this page will only be applicable if you are using Wazuh as your SIEM.  I could not find neither custom rules nor decoders written for BSD's version of auditd, so I decided to write them myself.  So far, I have created a decoder that decodes ssh logins, execve calls, and file write operations.  I have not yet created the rules based off the decoded logs, but they will be coming soon.  You can find the decoder [here](https://github.com/Maxgriff/Maxgriff.github.io/blob/main/BSD/files/auditd-bsd.xml) and download it [here](auditd-bsd.xml) file.  So far the decoder can deal with:
+  - writing to files
+  - OpenSSH logins (successful and unsuccessful login with password)
+  - Running commands (Other than shell builtins such as "echo")
+
+I would like to add decoders for the following actions:
+  - adding users
+  - changing passwords
+  - connect(2) syscalls
+
+The next step is writing rules for the decoded logs.  In the future I would like to create rules logging:
+  - execution of suspicious binaries (nc, su, adduser, etc.)
+  - successful and unsuccessful log ins
+  - calls to connect(2) by user root
+  - editing configuration files (.conf, .cfg, /etc/*, etc.)
+  - stopping and starting services
