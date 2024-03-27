@@ -5,9 +5,9 @@ body {
 }
 
 code {
-    background-color: #000;
-    color: #fff;
-    padding: 3px 6px;
+    background-color: #0c0c0c;
+    color: #d8d8d8;
+    padding: 4px 6px;
     border-radius: 5px;
     font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
 }
