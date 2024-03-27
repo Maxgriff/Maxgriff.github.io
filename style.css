@@ -26,7 +26,7 @@ li.link {
     margin-bottom: 10px;
 }
 
-a {
+a.link {
     text-decoration: none;
     color: #007bff;
     display: block;
@@ -35,7 +35,7 @@ a {
     transition: background-color 0.3s ease;
 }
 
-a:hover {
+a.link:hover {
     background-color: #eaeaea;
 }
 

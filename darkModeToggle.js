@@ -1,7 +1,15 @@
+// darkModeToggle.js
+
 // Function to toggle dark mode
 function toggleDarkMode() {
     // Toggle dark mode class on body
     document.body.classList.toggle('dark-mode');
+    
+    // Toggle dark mode class on container
+    var containers = document.querySelectorAll('.container');
+    containers.forEach(container => {
+        container.classList.toggle('dark-mode');
+    });
     
     // Update button text based on current mode
     var isDarkMode = document.body.classList.contains('dark-mode');
