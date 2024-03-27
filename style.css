@@ -5,14 +5,11 @@ body {
 }
 
 code {
-    display: block;
     background-color: #000;
     color: #fff;
-    padding: 10px;
+    padding: 3px 6px;
     border-radius: 5px;
-    margin: 10px 0;
     font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
-    overflow-x: auto;
 }
 
 .container {
