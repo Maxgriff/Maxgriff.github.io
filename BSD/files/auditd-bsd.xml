@@ -1,51 +1,73 @@
-<decoder name="auditbsd-syscall">
-  <prematch type="pcre2">^header,\d+,\d+,execve\(2\),\d+,[\w\d :]+,[ +\d\w]+,exec arg,.*?,exec env,.*?,p</prematch>
+<decoder name="auditbsd">
+  <prematch>^header,</prematch>
 </decoder>
 
 <decoder name="auditbsd-syscall-success">
-  <parent>auditbsd-syscall</parent>
-  <prematch offset="after_parent" type="pcre2">ath,.*?,attribute</prematch>
-  <regex type="pcre2">^header,(\d+),\d+,(execve)\(2\),\d+,([\w\d :]+),[ +\d\w]+,exec arg,(.*?),exec env,(.*?),path,(.*?),attribute,.*?,subject,(.*?),(.*?),(.*?),(.*?),(.*?),(\d+),(\d+),(\d+),(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}),return,(.*?),\d+</regex>
-  <order>audit.num,audit.type,audit.time,audit.args,audit.env,audit.binary_path,audit.user_actual,audit.user_effective,audit.group_effectve,audit.user_real,audit.group_real,audit.process_id,audit.session_id,audit.rport,audit.rhost,audit.returns</order>
+  <parent>auditbsd</parent>
+  <prematch offset="after_parent" type="pcre2">\d+,\d+,execve\(2\),\d+,[\w\d :]+,[ +\d\w]+,exec arg,.*?,exec env,.*?,path,.*?,attribute</prematch>
+  <regex offset="after_parent" type="pcre2">(\d+),\d+,(execve)\(2\),\d+,([\w\d :]+),[ +\d\w]+,exec arg,(.*?),exec env,(.*?),path,(.*?),attribute,.*?,subject,((.*?),(.*?)),(.*?),(.*?),(.*?),(\d+),(\d+),(\d+),(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}),return,(.*?),\d+</regex>
+  <order>audit.num,audit.type,audit.time,audit.args,audit.env,audit.binary_path,audit.user_comparison,audit.user_actual,audit.user_effective,audit.group_effectve,audit.user_real,audit.group_real,audit.process_id,audit.session_id,audit.rport,audit.rhost,audit.return</order>
 </decoder>
 
 <decoder name="auditbsd-syscall-failure">
-  <parent>auditbsd-syscall</parent>
-  <prematch offset="after_parent" type="pcre2">ath,.*?,subject</prematch>
-  <regex type="pcre2">^header,(\d+),\d+,(execve)\(2\),\d+,([\w\d :]+),[ +\d\w]+,exec arg,(.*?),exec env,(.*?),path,(.*?),subject,(.*?),(.*?),(.*?),(.*?),(.*?),(\d+),(\d+),(\d+),(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}),return,(.*?),\d+</regex>
-  <order>audit.num,audit.type,audit.time,audit.args,audit.env,audit.binary_path,audit.user_actual,audit.user_effective,audit.group_effectve,audit.user_real,audit.group_real,audit.process_id,audit.session_id,audit.rport,audit.rhost,audit.returns</order>
-</decoder>
-
-<decoder name="auditbsd-login">
-  <prematch type="pcre2">^header,\d+,\d+,\S+ login</prematch>
+  <parent>auditbsd</parent>
+  <prematch offset="after_parent" type="pcre2">\d+,\d+,execve\(2\),\d+,[\w\d :]+,[ +\d\w]+,exec arg,.*?,exec env,.*?,path,.*?,subject</prematch>
+  <regex offset="after_parent" type="pcre2">(\d+),\d+,(execve)\(2\),\d+,([\w\d :]+),[ +\d\w]+,exec arg,(.*?),exec env,(.*?),path,(.*?),subject,((.*?),(.*?)),(.*?),(.*?),(.*?),(\d+),(\d+),(\d+),(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}),return,(.*?),\d+</regex>
+  <order>audit.num,audit.type,audit.time,audit.args,audit.env,audit.binary_path,audit.user_comparison,audit.user_actual,audit.user_effective,audit.group_effectve,audit.user_real,audit.group_real,audit.process_id,audit.session_id,audit.rport,audit.rhost,audit.return</order>
 </decoder>
 
 <decoder name="auditbsd-ssh-login">
-  <parent>auditbsd-login</parent>
-  <regex type="pcre2">^header,(\d+),\d+,(\S+ login),\d+,(.*?), .*?,subject_ex,(.*?),(.*?),(.*?),(.*?),(.*?),(\d+),(\d+),(\d+),(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}),text,(.*?),return,(.*?),\d+</regex>
-  <order>audit.num,audit.type,audit.time,audit.user_actual,audit.user_effective,audit.group_effectve,audit.user_real,audit.group_real,audit.process_id,audit.session_id,audit.rport,audit.rhost,audit.result,audit.returns</order>
+  <parent>auditbsd</parent>
+  <prematch offset="after_parent">\d+,\d+,OpenSSH</prematch>
+  <regex offset="after_parent" type="pcre2">(\d+),\d+,(\w+ login),\d+,(.*?), .*?,subject_ex,(.*?),(.*?),(.*?),(.*?),(.*?),(\d+),(\d+),(\d+),(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}),text,(.*?),return,(.*?),\d+</regex>
+  <order>audit.num,audit.type,audit.time,user,audit.user_effective,audit.group_effectve,audit.user_real,audit.group_real,audit.process_id,audit.session_id,srcport,srcip,audit.result,audit.return</order>
 </decoder>
 
-<decoder name="auditbsd-open">
-  <prematch type="pcre2">^header,\d+,\d+,open\S+ - (\D+)\d+,([\w\d :]*),.*?,p</prematch>
+<decoder name="auditbsd-open-with-attributes">
+  <parent>auditbsd</parent>
+  <prematch offset="after_parent" type="pcre2">\d+,\d+,open\S+ - (\D+)\d+,([\w\d :]*),.*?,path,.*?,attribute</prematch>
+  <regex offset="after_parent" type="pcre2">(\d+),\d+,(open)\S+ - (\D+)\d+,([\w\d :]*),.*?,path,(.*?),attribute,.*?,subject,(.*?),(.*?),(.*?),(.*?),(.*?),(\d+),(\d+),(\d+),(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}),return,(.*?),(\d+)</regex>
+  <order>audit.num,audit.type,audit.mode,audit.time,audit.file,audit.user_actual,audit.user_effective,audit.group_effectve,audit.user_real,audit.group_real,audit.process_id,audit.session_id,audit.rport,audit.rhost,audit.return,audit.return_code</order>
 </decoder>
 
-<decoder name="auditbsd-write-with-attributes">
-  <parent>auditbsd-open</parent>
-  <prematch offset="after_parent" type="pcre2">ath,.*?,attribute</prematch>
-  <regex type="pcre2">^header,(\d+),\d+,(open)\S+ - (\D+)\d+,([\w\d :]*),.*?,path,(.*?),attribute,.*?,subject,(.*?),(.*?),(.*?),(.*?),(.*?),(\d+),(\d+),(\d+),(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}),return,(.*?),(\d+)</regex>
-  <order>audit.num,audit.type,audit.mode,audit.time,audit.file,audit.user_actual,audit.user_effective,audit.group_effectve,audit.user_real,audit.group_real,audit.process_id,audit.session_id,audit.rport,audit.rhost,audit.result,audit.return_code</order>
-</decoder>
-
-<decoder name="auditbsd-write-without-attributes">
-  <parent>auditbsd-open</parent>
-  <prematch offset="after_parent" type="pcre2">ath,.*?,subject</prematch>
-  <regex type="pcre2">^header,(\d+),\d+,(open)\S+ - (\D+)\d+,([\w\d :]*),.*?,path,(.*?),subject,(.*?),(.*?),(.*?),(.*?),(.*?),(\d+),(\d+),(\d+),(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}),return,(.*?),(\d+)</regex>
-  <order>audit.num,audit.type,audit.mode,audit.time,audit.file,audit.user_actual,audit.user_effective,audit.group_effectve,audit.user_real,audit.group_real,audit.process_id,audit.session_id,audit.rport,audit.rhost,audit.result,audit.return_code</order>
+<decoder name="auditbsd-open-without-attributes">
+  <parent>auditbsd</parent>
+  <prematch offset="after_parent" type="pcre2">\d+,\d+,open\S+ - (\D+)\d+,([\w\d :]*),.*?,path,.*?,subject</prematch>
+  <regex offset="after_parent" type="pcre2">(\d+),\d+,(open)\S+ - (\D+)\d+,([\w\d :]*),.*?,path,(.*?),subject,(.*?),(.*?),(.*?),(.*?),(.*?),(\d+),(\d+),(\d+),(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}),return,(.*?),(\d+)</regex>
+  <order>audit.num,audit.type,audit.mode,audit.time,audit.file,audit.user_actual,audit.user_effective,audit.group_effectve,audit.user_real,audit.group_real,audit.process_id,audit.session_id,audit.rport,audit.rhost,audit.return,audit.return_code</order>
 </decoder>
 
 <decoder name="auditbsd-audit-actions">
-  <prematch>^header,\d+,\d+,audit </prematch>
-  <regex offset="after_prematch" type="pcre2">(\w+),\d+,([\w\d :]*),.*?,trailer</regex>
-  <order>audit.type,audit.time</order>
+  <parent>auditbsd</parent>
+  <prematch offset="after_parent">\d+,\d+,audit </prematch>
+  <regex offset="after_parent" type="pcre2">(\d+),\d+,(audit) (\w+),\d+,([\w\d :]*),.*?,trailer</regex>
+  <order>audit.num,audit.type,audit.action,audit.time</order>
+</decoder>
+
+<decoder name="auditbsd-rename-with-attributes">
+  <parent>auditbsd</parent>
+  <prematch offset="after_parent" type="pcre2">\d+,\d+,rename\(2\),\d+,([\w\d :]*),.*?,path,.*?,attribute</prematch>
+  <regex type="pcre2">header,(\d+),\d+,(rename)\(2\),\d+,([\w\d :]*),.*?,path,(.*?),attribute,.*?,path,(.*?),subject,(.*?),(.*?),(.*?),(.*?),(.*?),(\d+),(\d+),(\d+),(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}),return,(.*?),</regex>
+  <order>audit.num,audit.type,audit.time,audit.initial_file,audit.result_file,audit.user_actual,audit.user_effective,audit.group_effectve,audit.user_real,audit.group_real,audit.process_id,audit.session_id,audit.rport,audit.rhost,audit.return</order>
+</decoder>
+
+<decoder name="auditbsd-rename-without-attributes">
+  <parent>auditbsd</parent>
+  <prematch offset="after_parent">\d+,\d+,rename</prematch>
+  <regex type="pcre2">header,(\d+),\d+,(rename)\(2\),\d+,([\w\d :]*),.*?,path,(.*?),path,(.*?),subject,(.*?),(.*?),(.*?),(.*?),(.*?),(\d+),(\d+),(\d+),(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}),return,(.*?),</regex>
+  <order>audit.num,audit.type,audit.time,audit.initial_file,audit.result_file,audit.user_actual,audit.user_effective,audit.group_effectve,audit.user_real,audit.group_real,audit.process_id,audit.session_id,audit.rport,audit.rhost,audit.return</order>
+</decoder>
+
+<decoder name="auditbsd-su">
+  <parent>auditbsd</parent>
+  <prematch offset="after_parent">\d+,\d+,su\(1\)</prematch>
+  <regex offset="after_parent" type="pcre2">(\d+),\d+,(su)\(1\),\d+,([\w\d :]*),.*?,subject,(.*?),(.*?),(.*?),(.*?),(.*?),(\d+),(\d+),(\d+),(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}),text,(.*?),return,(.*?),\d+</regex>
+  <order>audit.num,audit.type,audit.time,audit.user_actual,audit.user_effective,audit.group_effectve,audit.user_real,audit.group_real,audit.process_id,audit.session_id,audit.rport,audit.rhost,audit.result,audit.return</order>
+</decoder>
+
+<decoder name="auditbsd-time">
+  <parent>auditbsd</parent>
+  <prematch offset="after_parent">\d+,\d+,settimeofday</prematch>
+  <regex offset="after_parent" type="pcre2">(\d+),\d+,(settimeofday)\(2\),\d+,([\w\d :]*),.*?,subject,(.*?),(.*?),(.*?),(.*?),(.*?),(\d+),(\d+),(\d+),(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}),return,(.*?),\d+</regex>
+  <order>audit.num,audit.type,audit.time,audit.user_actual,audit.user_effective,audit.group_effectve,audit.user_real,audit.group_real,audit.process_id,audit.session_id,audit.rport,audit.rhost,audit.return</order>
 </decoder>

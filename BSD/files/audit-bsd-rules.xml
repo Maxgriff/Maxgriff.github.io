@@ -1,12 +1,349 @@
 <group name="auditbsd">
+
   <rule id="100500" level="0">
-    <decoded_as>auditbsd-syscall</decoded_as>
-    <description>group auditbsd syscall rules</description>
+    <decoded_as>auditbsd</decoded_as>
+    <description>Group auditbsd rules</description>
   </rule>
 
-  <rule id="100501" level="5">
+  <rule id="100501" level="0">
     <if_sid>100500</if_sid>
-    <field name="audit.binary_path">nc|</field>
-    <description>Test rule to see if log is forwarding</description>
+    <field name="audit.type">execve</field>
+    <description>Group calls to execve</description>
   </rule>
+  
+  <rule id="100502" level="0">
+    <if_sid>100501</if_sid>
+    <field name="audit.user_comparison" type="pcre2">^([\w\d_-]+),(\1)$</field>
+    <description>Group calls to execve as initial user</description>
+  </rule>
+  
+  <rule id="100503" level="0">
+    <if_sid>100501</if_sid>
+    <field name="audit.user_comparison" negate="yes" type="pcre2">^([\w\d_-]+),(\1)$</field>
+    <description>Group calls to execve as different user</description>
+  </rule>
+  
+  <rule id="100504" level="8">
+    <if_sid>100502</if_sid>
+    <field name="audit.binary_path">nc|netcat|ncat</field>
+    <description>$(audit.user_actual) ran $(audit.binary_path)</description>
+  </rule>
+  
+  <rule id="100505" level="8">
+    <if_sid>100503</if_sid>
+    <field name="audit.binary_path">nc|netcat|ncat</field>
+    <description>$(audit.user_actual) ran $(audit.binary_path) as user: $(audit.user_effective)</description>
+  </rule>
+  
+  <rule id="100506" level="10">
+    <if_sid>100502</if_sid>
+    <field name="audit.args" type="pcre2">/etc/rc\.d/(.*?),stop$</field>
+    <description>$(audit.user_actual) stopped a service</description>
+    <mitre>
+      <id>T1489</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100507" level="10">
+    <if_sid>100503</if_sid>
+    <field name="audit.args" type="pcre2">/etc/rc\.d/(.*?),stop$</field>
+    <description>$(audit.user_actual) stopped a service as user: $(audit.user_effective)</description>
+    <mitre>
+      <id>T1489</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100508" level="5">
+    <if_sid>100502</if_sid>
+    <field name="audit.binary_path" type="pcre2">chmod</field>
+    <description>$(audit.user_actual) modified the attributes of a file</description>
+  </rule>
+  
+  <rule id="100509" level="8">
+    <if_sid>100508</if_sid>
+    <field name="audit.args" type="pcre2">\+[strwugo]*(?i)x[strwugo]*|[7531]\d\d,|\d[7531]\d,|\d\d[7531],</field>
+    <description>$(audit.user_actual) made a file executable</description>
+  </rule>
+  
+  <rule id="100510" level="8">
+    <if_sid>100508</if_sid>
+    <field name="audit.args" type="pcre2">\+[xXtrwugo]*s[xXstrwugo]*|,[764]\d\d\d,</field>
+    <description>$(audit.user_actual) added the setuid bit to a file</description>
+    <mitre>
+      <id>T1548.001</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100511" level="8">
+    <if_sid>100509</if_sid>
+    <field name="audit.args" type="pcre2">\+[xXtrwugo]*s[xXstrwugo]*|,[764]\d\d\d,</field>
+    <description>$(audit.user_actual) added the setuid bit to a file and made it executable</description>
+    <mitre>
+      <id>T1548.001</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100512" level="5">
+    <if_sid>100503</if_sid>
+    <field name="audit.binary_path" type="pcre2">chmod</field>
+    <description>$(audit.user_actual) modified the attributes of a file as user: $(audit.user_effective)</description>
+  </rule>
+  
+  <rule id="100513" level="8">
+    <if_sid>100512</if_sid>
+    <field name="audit.args" type="pcre2">\+[strwugo]*(?i)x[strwugo]*|[7531]\d\d,|\d[7531]\d,|\d\d[7531],</field>
+    <description>$(audit.user_actual) made a file executable as user: $(audit.user_effective)</description>
+  </rule>
+  
+  <rule id="100514" level="8">
+    <if_sid>100512</if_sid>
+    <field name="audit.args" type="pcre2">\+[xXtrwugo]*s[xXstrwugo]*|,[764]\d\d\d,</field>
+    <description>$(audit.user_actual) added the setuid bit to a file as user: $(audit.user_effective)</description>
+    <mitre>
+      <id>T1548.001</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100515" level="8">
+    <if_sid>100513</if_sid>
+    <field name="audit.args" type="pcre2">\+[xXtrwugo]*s[xXstrwugo]*|,[764]\d\d\d,</field>
+    <description>$(audit.user_actual) added the setuid bit to a file and made it executable as user: $(audit.user_effective)</description>
+    <mitre>
+      <id>T1548.001</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100516" level="10">
+    <if_sid>100502</if_sid>
+    <field name="audit.args">sh,|bash,|csh,|zsh,|rbash,|fish,|dash,|ash,|tcsh,|shell,</field>
+    <field name="audit.binary_path">/sh$|/bash$|/csh$|/zsh$|/rbash$|/fish$|/dash$|/ash$|/tcsh$|shell$</field>
+    <description>$(audit.user_actual) executed a script with $(audit.binary_path)</description>
+    <mitre>
+      <id>T1059.004</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100517" level="10">
+    <if_sid>100503</if_sid>
+    <field name="audit.args">sh,|bash,|csh,|zsh,|rbash,|fish,|dash,|ash,|tcsh,|shell,</field>
+    <field name="audit.binary_path">/sh$|/bash$|/csh$|/zsh$|/rbash$|/fish$|/dash$|/ash$|/tcsh$|shell$</field>
+    <description>$(audit.user_actual) executed a script with $(audit.binary_path) as user: $(audit.user_effective)</description>
+    <mitre>
+      <id>T1059.004</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100518" level="8">
+    <if_sid>100502</if_sid>
+    <field name="audit.binary_path">curl$|wget$</field>
+    <description>$(audit.user_actual) used $(audit.binary_path) to download something</description>
+  </rule>
+  
+  <rule id="100519" level="8">
+    <if_sid>100503</if_sid>
+    <field name="audit.binary_path">curl$|wget$</field>
+    <description>$(audit.user_actual) used $(audit.binary_path) to download something as user: $(audit.user_effective)</description>
+  </rule>
+  
+  <rule id="100520" level="10">
+    <if_sid>100502</if_sid>
+    <field name="audit.binary_path">/ssh$|/telnet$</field>
+    <description>Possible pivoting attempt by $(audit.user_actual)</description>
+    <mitre>
+      <id>T1021.004</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100521" level="10">
+    <if_sid>100503</if_sid>
+    <field name="audit.binary_path">/ssh$|/telnet$</field>
+    <description>Possible pivoting attempt by $(audit.user_actual) as user: $(audit.user_effective)</description>
+    <mitre>
+      <id>T1021.004</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100522" level="10">
+    <if_sid>100502</if_sid>
+    <field name="audit.binary_path">/pw$</field>
+    <description>New user added by $(audit.user_actual)</description>
+    <mitre>
+      <id>T1136.001</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100523" level="12">
+    <if_sid>100503</if_sid>
+    <field name="audit.binary_path">/pw$</field>
+    <description>New user added by $(audit.user_actual) as user: $(audit.user_effective)</description>\
+    <mitre>
+      <id>T1136.001</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100524" level="8">
+    <if_sid>100502</if_sid>
+    <field name="audit.binary_path">/pwd_mkdb$</field>
+    <description>A user's password was changed by $(audit.user_actual)</description>
+    <mitre>
+      <id>T1531</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100525" level="8">
+    <if_sid>100503</if_sid>
+    <field name="audit.binary_path">/pwd_mkdb$</field>
+    <description>A user's password was changed by $(audit.user_actual) as user: $(audit.user_effective)</description>
+    <mitre>
+      <id>T1531</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100526" level="10">
+    <if_sid>100502</if_sid>
+    <field name="audit.binary_path">/touch$</field>
+    <field name="audit.args" type="pcre2">touch.*?-[Atd]</field>
+    <description>$(audit.user_actual) created/modified a file to have the wrong date</description>
+    <mitre>
+      <id>T1070.006</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100527" level="10">
+    <if_sid>100503</if_sid>
+    <field name="audit.binary_path">/touch$</field>
+    <field name="audit.args" type="pcre2">touch.*?-[Atd]</field>
+    <description>$(audit.user_actual) created/modified a file to have the wrong date as user: $(audit.user_effective)</description>
+    <mitre>
+      <id>T1070.006</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100528" level="12">
+    <if_sid>100506</if_sid>
+    <field name="audit.args" type="pcre2">/etc/rc\.d/pf,stop$</field>
+    <description>$(audit.user_actual) stopped the firewall service</description>
+    <mitre>
+      <id>T1562.004</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100529" level="10">
+    <if_sid>100507</if_sid>
+    <field name="audit.args" type="pcre2">/etc/rc\.d/pf,stop$</field>
+    <description>$(audit.user_actual) stopped the firewall service as user: $(audit.user_effective)</description>
+    <mitre>
+      <id>T1562.004</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100600" level="0">
+    <if_sid>100500</if_sid>
+    <field name="audit.type">^su$</field>
+    <description>Group switching users rules</description>
+  </rule>
+  
+  <rule id="100601" level="7">
+    <if_sid>100600</if_sid>
+    <field name="audit.return">success</field>
+    <description>$(audit.user_actual) successfully switched to user $(audit.user_effective)</description>
+    <mitre>
+      <id>T1078.002</id>
+      <id>T1078.003</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100602" level="7">
+    <if_sid>100600</if_sid>
+    <field name="audit.return">failure</field>
+    <description>$(audit.user_actual) failed to switch to user $(audit.user_effective)</description>
+    <mitre>
+      <id>T1078.002</id>
+      <id>T1078.003</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100610" level="0">
+    <if_sid>100500</if_sid>
+    <field name="audit.type">ssh</field>
+    <description>Group ssh rules</description>
+  </rule>
+  
+  <rule id="100611" level="5">
+    <if_sid>100610</if_sid>
+    <field name="audit.return">success</field>
+    <description>Successful SSH login by $(dstuser) from $(srcip)</description>
+  </rule>
+  
+  <rule id="100612" level="6">
+    <if_sid>100610</if_sid>
+    <field name="audit.return">failure</field>
+    <description>Failed SSH login by $(dstuser) from $(srcip)</description>
+    <mitre>
+      <id>T1110.001</id>
+    </mitre>
+    <group>authentication_failed,gdpr_IV_35.7.d,gdpr_IV_32.2,gpg13_7.1,hipaa_164.312.b,nist_800_53_AU.14,nist_800_53_AC.7,pci_dss_10.2.4,pci_dss_10.2.5,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+  
+  <rule id="100613" level="12" frequency="10" timeframe="60" ignore="300">
+    <if_matched_sid>100612</if_matched_sid>
+    <same_srcip/>
+    <different_user/>
+    <description>Multiple failed SSH login attempts from $(srcip)</description>
+    <mitre>
+      <id>T1110.003</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100614" level="12" frequency="10" timeframe="60" ignore="300">
+    <if_matched_sid>100612</if_matched_sid>
+    <same_srcip/>
+    <same_user/>
+    <description>Multiple failed SSH login attempts by $(dstuser) from $(srcip).  Possible brute force attack</description>
+    <mitre>
+      <id>T1110</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100620" level="0">
+    <if_sid>100500</if_sid>
+    <field name="audit.type">^audit$</field>
+    <description>Group together auditd status rules</description>
+  </rule>
+  
+  <rule id="100621" level="3">
+    <if_sid>100620</if_sid>
+    <field name="audit.action">startup</field>
+    <description>Auditd has started</description>
+  </rule>
+  
+  <rule id="100622" level="12">
+    <if_sid>100620</if_sid>
+    <field name="audit.action">shutdown</field>
+    <description>Auditd has been shutdown</description>
+    <mitre>
+      <id>T1562.012</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100628" level="10">
+    <if_sid>100500</if_sid>
+    <field name="audit.type">settimeofday</field>
+    <field name="audit.return">success</field>
+    <description>$(audit.user_actual) successfully changed the system time to $(audit.time)</description>
+    <mitre>
+      <id>T1070.006</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100629" level="10">
+    <if_sid>100500</if_sid>
+    <field name="audit.type">settimeofday</field>
+    <field name="audit.return">failure</field>
+    <description>$(audit.user_actual) failed to change the system time to $(audit.time)</description>
+    <mitre>
+      <id>T1070.006</id>
+    </mitre>
+  </rule>
+  
 </group>

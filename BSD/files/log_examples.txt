@@ -1,0 +1,58 @@
+Final execve call when creating a user using adduser
+
+header,660,11,execve(2),0,Wed Mar 27 02:59:17 2024, + 990 msec,exec arg,/usr/sbin/pw,useradd,-u,1004,-n,test,-s,/bin/sh,-m,-d,/home/test,-k,/usr/share/skel,-w,yes,-h,0,exec env,VENDOR=amd,SSH_CLIENT=10.0.0.4 56716 22,LOGNAME=root,PAGER=less,LANG=C.UTF-8,OSTYPE=FreeBSD,MACHTYPE=x86_64,MAIL=/var/mail/root,PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:/root/bin,EDITOR=vi,HOST=freebsd,REMOTEHOST=10.0.0.4,PWD=/root,GROUP=wheel,TERM=xterm-256color,SSH_TTY=/dev/pts/1,HOME=/root,USER=root,SSH_CONNECTION=10.0.0.4 56716 10.0.0.13 22,HOSTTYPE=FreeBSD,SHELL=/bin/csh,MM_CHARSET=UTF-8,BLOCKSIZE=K,SHLVL=1,path,/usr/sbin/pw,attribute,555,root,wheel,98,24069,761768,subject,root,root,wheel,root,wheel,1122,1062,56716,10.0.0.4,return,success,0,trailer,660,
+
+
+Final execve call when changing a user's password
+
+header,613,11,execve(2),0,Wed Mar 27 03:05:37 2024, + 95 msec,exec arg,pwd_mkdb,-p,-d,/etc,-u,test,/etc/pw.XLwEGR,exec env,USER=root,LOGNAME=root,HOME=/root,MAIL=/var/mail/root,PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:/root/bin,TERM=xterm-256color,BLOCKSIZE=K,MM_CHARSET=UTF-8,LANG=C.UTF-8,SHELL=/bin/csh,SSH_CLIENT=10.0.0.4 56716 22,SSH_CONNECTION=10.0.0.4 56716 10.0.0.13 22,SSH_TTY=/dev/pts/1,HOSTTYPE=FreeBSD,VENDOR=amd,OSTYPE=FreeBSD,MACHTYPE=x86_64,SHLVL=1,PWD=/root,GROUP=wheel,HOST=freebsd,REMOTEHOST=10.0.0.4,EDITOR=vi,PAGER=less,path,/usr/sbin/pwd_mkdb,attribute,555,root,wheel,98,24086,762096,subject,root,root,wheel,root,wheel,1480,1062,56716,10.0.0.4,return,success,0,trailer,613,
+
+
+Log generated when switching users
+
+header,548,11,execve(2),0,Wed Mar 27 14:14:02 2024, + 111 msec,exec arg,su,root,exec env,SSH_CLIENT=10.0.0.4 54476 22,LOGNAME=ec2-user,PAGER=less,LANG=C.UTF-8,MAIL=/var/mail/ec2-user,PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:/home/ec2-user/bin,EDITOR=vi,ENV=/home/ec2-user/.shrc,OLDPWD=/usr/home/ec2-user,PWD=/home/ec2-user,TERM=xterm-256color,SSH_TTY=/dev/pts/1,HOME=/home/ec2-user,USER=ec2-user,SSH_CONNECTION=10.0.0.4 54476 10.0.0.13 22,SHELL=/bin/sh,MM_CHARSET=UTF-8,BLOCKSIZE=K,path,/usr/bin/su,attribute,4555,root,wheel,98,15475,412560,subject,ec2-user,ec2-user,ec2-user,ec2-user,ec2-user,1208,1195,54476,10.0.0.4,return,success,0,trailer,548,
+
+
+Log generated when successful su from ec2-user to root
+
+header,97,11,su(1),0,Wed Mar 27 14:27:05 2024, + 839 msec,subject,ec2-user,root,ec2-user,ec2-user,ec2-user,932,932,60152,10.0.0.4,text,successful authentication,return,success,0,trailer,97,
+
+
+Log generated when unsuccessful su from ec2-user to root
+
+header,109,11,su(1),0,Wed Mar 27 17:44:24 2024, + 75 msec,subject,ec2-user,root,ec2-user,ec2-user,ec2-user,1896,1896,58300,10.0.0.4,text,bad su ec2-user to root on /dev/pts/1,return,failure : Operation not permitted,1,trailer,109,
+
+
+Log generated when moving a file
+
+header,128,11,rename(2),0,Wed Mar 27 03:10:09 2024, + 847 msec,path,/root/test,attribute,644,root,wheel,98,23921,149135,path,/root/../test,subject,root,root,wheel,root,wheel,1490,1062,56716,10.0.0.4,return,success,0,trailer,128,
+
+
+Sample log when file is renamed
+
+header,147,11,rename(2),0,Wed Mar 27 03:51:55 2024, + 36 msec,path,/var/cron/tabs/tmp.1085,attribute,600,root,wheel,98,27992,18055,path,/var/cron/tabs/root,subject,root,root,wheel,root,wheel,1085,1077,47826,10.0.0.4,return,success,0,trailer,147,
+
+
+Sample connect(2) log after trying to nc out
+
+header,88,11,connect(2),0,Wed Mar 27 03:11:36 2024, + 111 msec,argument,1,0x3,fd,socket-inet,2,4444,10.0.0.5,subject,root,root,wheel,root,wheel,1498,1062,56716,10.0.0.4,return,failure : Connection refused,4294967295,trailer,88,
+
+
+Sample connect(2) log after successfully nc out
+
+header,88,11,connect(2),0,Wed Mar 27 03:16:14 2024, + 654 msec,argument,1,0x3,fd,socket-inet,2,4444,10.0.0.5,subject,root,root,wheel,root,wheel,1508,1062,56716,10.0.0.4,return,success,0,trailer,88,
+
+
+Sample log when service is stopped
+
+header,239,11,execve(2),0,Wed Mar 27 03:23:07 2024, + 656 msec,exec arg,/usr/local/etc/rc.d/wazuh-agent,stop,exec env,PATH=/sbin:/bin:/usr/sbin:/usr/bin,HOME=/,BLOCKSIZE=K,MM_CHARSET=UTF-8,LANG=C.UTF-8,path,/bin/sh,attribute,555,root,wheel,98,26951,772088,subject,root,root,wheel,root,wheel,1539,1062,56716,10.0.0.4,return,success,0,trailer,239,
+
+
+Another version of the same log
+
+header,584,11,execve(2),0,Wed Mar 27 03:23:07 2024, + 648 msec,exec arg,service,wazuh-agent,stop,exec env,USER=root,LOGNAME=root,HOME=/root,MAIL=/var/mail/root,PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:/root/bin,TERM=xterm-256color,BLOCKSIZE=K,MM_CHARSET=UTF-8,LANG=C.UTF-8,SHELL=/bin/csh,SSH_CLIENT=10.0.0.4 56716 22,SSH_CONNECTION=10.0.0.4 56716 10.0.0.13 22,SSH_TTY=/dev/pts/1,HOSTTYPE=FreeBSD,VENDOR=amd,OSTYPE=FreeBSD,MACHTYPE=x86_64,SHLVL=1,PWD=/root,GROUP=wheel,HOST=freebsd,REMOTEHOST=10.0.0.4,EDITOR=vi,PAGER=less,path,/bin/sh,attribute,555,root,wheel,98,26951,772088,subject,root,root,wheel,root,wheel,1539,1062,56716,10.0.0.4,return,success,0,trailer,584,
+
+
+Create a file with a specific time stamp
+
+header,585,11,execve(2),0,Wed Mar 27 22:38:09 2024, + 161 msec,exec arg,touch,-a,-m,-t,2403272214.00,timetest.txt,exec env,SSH_CLIENT=10.0.0.4 44938 22,LOGNAME=ec2-user,PAGER=less,LANG=C.UTF-8,MAIL=/var/mail/ec2-user,PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:/home/ec2-user/bin,EDITOR=vi,ENV=/home/ec2-user/.shrc,OLDPWD=/usr/home/ec2-user,PWD=/home/ec2-user,TERM=xterm-256color,SSH_TTY=/dev/pts/1,HOME=/home/ec2-user,USER=ec2-user,SSH_CONNECTION=10.0.0.4 44938 10.0.0.13 22,SHELL=/bin/sh,MM_CHARSET=UTF-8,BLOCKSIZE=K,path,/usr/bin/touch,attribute,555,root,wheel,98,15746,466684,subject,ec2-user,ec2-user,ec2-user,ec2-user,ec2-user,2330,2043,44938,10.0.0.4,return,success,0,trailer,585,
