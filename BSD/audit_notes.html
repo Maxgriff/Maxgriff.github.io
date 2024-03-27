@@ -7,27 +7,12 @@
     <link rel="stylesheet" href="/style.css">
     <script src="https://cdn.jsdelivr.net/npm/showdown@1.9.1/dist/showdown.min.js"></script>
     <script src="/renderMarkdown.js" markdown-path="files/auditd_notes.md"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4; /* Light gray background */
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            background-color: #fff; /* White background for content */
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Drop shadow effect */
-        }
-    </style>
 </head>
-<body>
+<body class="dark-mode">
     <div class="container">
         <div id="markdownContent"></div>
-        <button id="toggleModeButton">Dark Mode</button>
     </div>
+    <button id="toggleModeButton">Dark Mode</button>
     <script src="/darkModeToggle.js"></script>
 </body>
 </html>
