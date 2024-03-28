@@ -166,6 +166,7 @@
   <rule id="100522" level="10">
     <if_sid>100502</if_sid>
     <field name="audit.binary_path">/pw$</field>
+    <field name="audit.args">pw,useradd,</field>
     <description>New user added by $(audit.user_actual)</description>
     <mitre>
       <id>T1136.001</id>
@@ -175,7 +176,8 @@
   <rule id="100523" level="12">
     <if_sid>100503</if_sid>
     <field name="audit.binary_path">/pw$</field>
-    <description>New user added by $(audit.user_actual) as user: $(audit.user_effective)</description>\
+    <field name="audit.args">pw,useradd,</field>
+    <description>New user added by $(audit.user_actual) as user: $(audit.user_effective)</description>
     <mitre>
       <id>T1136.001</id>
     </mitre>
@@ -184,6 +186,7 @@
   <rule id="100524" level="8">
     <if_sid>100502</if_sid>
     <field name="audit.binary_path">/pwd_mkdb$</field>
+    <field name="audit.args" type="pcre2">-u,.*?etc/pw\.</field>
     <description>A user's password was changed by $(audit.user_actual)</description>
     <mitre>
       <id>T1531</id>
@@ -193,6 +196,7 @@
   <rule id="100525" level="8">
     <if_sid>100503</if_sid>
     <field name="audit.binary_path">/pwd_mkdb$</field>
+    <field name="audit.args" type="pcre2">-u,.*?/etc/pw\.</field>
     <description>A user's password was changed by $(audit.user_actual) as user: $(audit.user_effective)</description>
     <mitre>
       <id>T1531</id>
@@ -234,6 +238,44 @@
     <description>$(audit.user_actual) stopped the firewall service as user: $(audit.user_effective)</description>
     <mitre>
       <id>T1562.004</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100530" level="12">
+    <if_sid>100522</if_sid>
+    <field name="audit.args" type="pcre2">-G,(\S+ )*?wheel</field>
+    <description>New Administrative user added by $(audit.user_actual)</description>
+    <mitre>
+      <id>T1136.001</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100531" level="12">
+    <if_sid>100523</if_sid>
+    <field name="audit.args" type="pcre2">-G,(\S+ )*?wheel</field>
+    <description>New Administrative user added by $(audit.user_actual) as user: $(audit.user_effective)</description>
+    <mitre>
+      <id>T1136.001</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100532" level="12">
+    <if_sid>100502</if_sid>
+    <field name="audit.binary_path">/pw$</field>
+    <field name="audit.args">pw,userdel,</field>
+    <description>$(audit.user_actual) removed a user</description>
+    <mitre>
+      <id>T1531</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100533" level="12">
+    <if_sid>100503</if_sid>
+    <field name="audit.binary_path">/pw$</field>
+    <field name="audit.args">,userdel,</field>
+    <description>$(audit.user_actual) removed a user as user: $(audit.user_effective)</description>
+    <mitre>
+      <id>T1531</id>
     </mitre>
   </rule>
   

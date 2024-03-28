@@ -8,6 +8,11 @@ Final execve call when changing a user's password
 header,613,11,execve(2),0,Wed Mar 27 03:05:37 2024, + 95 msec,exec arg,pwd_mkdb,-p,-d,/etc,-u,test,/etc/pw.XLwEGR,exec env,USER=root,LOGNAME=root,HOME=/root,MAIL=/var/mail/root,PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:/root/bin,TERM=xterm-256color,BLOCKSIZE=K,MM_CHARSET=UTF-8,LANG=C.UTF-8,SHELL=/bin/csh,SSH_CLIENT=10.0.0.4 56716 22,SSH_CONNECTION=10.0.0.4 56716 10.0.0.13 22,SSH_TTY=/dev/pts/1,HOSTTYPE=FreeBSD,VENDOR=amd,OSTYPE=FreeBSD,MACHTYPE=x86_64,SHLVL=1,PWD=/root,GROUP=wheel,HOST=freebsd,REMOTEHOST=10.0.0.4,EDITOR=vi,PAGER=less,path,/usr/sbin/pwd_mkdb,attribute,555,root,wheel,98,24086,762096,subject,root,root,wheel,root,wheel,1480,1062,56716,10.0.0.4,return,success,0,trailer,613,
 
 
+Log generated when removing a user
+
+header,673,11,execve(2),0,Wed Mar 27 23:53:46 2024, + 569 msec,exec arg,/usr/sbin/pw,userdel,-n,malicious,-r,exec env,VENDOR=amd,SSH_CLIENT=10.0.0.4 59092 22,LOGNAME=ec2-user,LANG=C.UTF-8,PAGER=less,OSTYPE=FreeBSD,MACHTYPE=x86_64,MAIL=/var/mail/ec2-user,PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:/root/bin,EDITOR=vi,HOST=freebsd,ENV=/home/ec2-user/.shrc,REMOTEHOST=10.0.0.4,OLDPWD=/usr/home/ec2-user,PWD=/home/ec2-user,GROUP=wheel,TERM=xterm-256color,SSH_TTY=/dev/pts/2,USER=ec2-user,HOME=/root,SSH_CONNECTION=10.0.0.4 59092 10.0.0.13 22,HOSTTYPE=FreeBSD,SHELL=/bin/csh,MM_CHARSET=UTF-8,BLOCKSIZE=K,SHLVL=1,path,/usr/sbin/pw,attribute,555,root,wheel,98,24069,761768,subject,ec2-user,root,wheel,root,wheel,3136,2769,59092,10.0.0.4,return,success,0,trailer,673,
+
+
 Log generated when switching users
 
 header,548,11,execve(2),0,Wed Mar 27 14:14:02 2024, + 111 msec,exec arg,su,root,exec env,SSH_CLIENT=10.0.0.4 54476 22,LOGNAME=ec2-user,PAGER=less,LANG=C.UTF-8,MAIL=/var/mail/ec2-user,PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:/home/ec2-user/bin,EDITOR=vi,ENV=/home/ec2-user/.shrc,OLDPWD=/usr/home/ec2-user,PWD=/home/ec2-user,TERM=xterm-256color,SSH_TTY=/dev/pts/1,HOME=/home/ec2-user,USER=ec2-user,SSH_CONNECTION=10.0.0.4 54476 10.0.0.13 22,SHELL=/bin/sh,MM_CHARSET=UTF-8,BLOCKSIZE=K,path,/usr/bin/su,attribute,4555,root,wheel,98,15475,412560,subject,ec2-user,ec2-user,ec2-user,ec2-user,ec2-user,1208,1195,54476,10.0.0.4,return,success,0,trailer,548,
