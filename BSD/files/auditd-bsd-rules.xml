@@ -25,13 +25,13 @@
   
   <rule id="100504" level="8">
     <if_sid>100502</if_sid>
-    <field name="audit.binary_path">nc|netcat|ncat</field>
+    <field name="audit.binary_path">/nc$|/netcat$|/ncat$</field>
     <description>$(audit.user_actual) ran $(audit.binary_path)</description>
   </rule>
   
   <rule id="100505" level="8">
     <if_sid>100503</if_sid>
-    <field name="audit.binary_path">nc|netcat|ncat</field>
+    <field name="audit.binary_path">/nc$|/netcat$|/ncat$</field>
     <description>$(audit.user_actual) ran $(audit.binary_path) as user: $(audit.user_effective)</description>
   </rule>
   
@@ -279,6 +279,16 @@
     </mitre>
   </rule>
   
+  <rule id="100534" level="10">
+    <if_sid>100516, 100517</if_sid>
+    <field name="audit.args">,-c,</field>
+    <description>Execution of a cron or at job</description>
+    <mitre>
+      <id>T1053.001</id>
+      <id>T1053.002</id>
+    </mitre>
+  </rule>
+  
   <rule id="100600" level="0">
     <if_sid>100500</if_sid>
     <field name="audit.type">^su$</field>
@@ -386,6 +396,57 @@
     <mitre>
       <id>T1070.006</id>
     </mitre>
+  </rule>
+  
+  <rule id="100630" level="0">
+    <if_sid>100500</if_sid>
+    <field name="audit.type">open</field>
+    <description>Group together calls to open</description>
+  </rule>
+  
+  <rule id="100631" level="8">
+    <if_sid>100630</if_sid>
+    <field name="audit.file" type="pcre2">conf(\.swp)?$|cfg(\.swp)?$|cf(\.swp)?$|cnf(\.swp)?$|ini(\.swp)?$|config(\.swp)?$</field>
+    <field name="audit.mode">write</field>
+    <description>$(audit.user_actual) opened configuration file $(audit.file) for writing</description>
+    <mitre>
+      <id>T1562.001</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100632" level="12">
+    <if_sid>100630</if_sid>
+    <field name="audit.file" type="pcre2">log$|/log/|/audit/</field>
+    <field name="audit.mode">write</field>
+    <description>$(audit.user_actual) opened log file $(audit.file) for writing</description>
+    <mitre>
+      <id>T1070.002</id>
+    </mitre>
+  </rule>
+  
+  <rule id="100633" level="8">
+    <if_sid>100630</if_sid>
+    <field name="audit.file" type="pcre2">^/tmp</field>
+    <field name="audit.mode">write</field>
+    <description>$(audit.user_actual) opened file $(audit.file) for writing in temp directory</description>
+  </rule>
+  
+  <rule id="100640" level="0">
+    <if_sid>100500</if_sid>
+    <field name="audit.type">unlink</field>
+    <description>Group file deletion rules</description>
+  </rule>
+  
+  <rule id="100641" level="5">
+    <if_sid>100640</if_sid>
+    <field name="audit.file" negate="yes">\.swp$|\.tmp$</field>
+    <description>$(audit.user_actual) removed $(audit.file)</description>
+  </rule>
+  
+  <rule id="100650" level="0">
+    <if_sid>100500</if_sid>
+    <field name="audit.type">rename</field>
+    <description>Group together move files rules</description>
   </rule>
   
 </group>

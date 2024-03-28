@@ -48,6 +48,11 @@ Sample connect(2) log after successfully nc out
 header,88,11,connect(2),0,Wed Mar 27 03:16:14 2024, + 654 msec,argument,1,0x3,fd,socket-inet,2,4444,10.0.0.5,subject,root,root,wheel,root,wheel,1508,1062,56716,10.0.0.4,return,success,0,trailer,88,
 
 
+Log generated when create ssh connection
+
+header,88,11,connect(2),0,Thu Mar 28 01:12:10 2024, + 552 msec,argument,1,0x3,fd,socket-inet,2,22,10.0.0.5,subject,ec2-user,ec2-user,ec2-user,ec2-user,ec2-user,1131,1076,59520,10.0.0.4,return,success,0,trailer,88,
+
+
 Sample log when service is stopped
 
 header,239,11,execve(2),0,Wed Mar 27 03:23:07 2024, + 656 msec,exec arg,/usr/local/etc/rc.d/wazuh-agent,stop,exec env,PATH=/sbin:/bin:/usr/sbin:/usr/bin,HOME=/,BLOCKSIZE=K,MM_CHARSET=UTF-8,LANG=C.UTF-8,path,/bin/sh,attribute,555,root,wheel,98,26951,772088,subject,root,root,wheel,root,wheel,1539,1062,56716,10.0.0.4,return,success,0,trailer,239,
@@ -61,3 +66,39 @@ header,584,11,execve(2),0,Wed Mar 27 03:23:07 2024, + 648 msec,exec arg,service,
 Create a file with a specific time stamp
 
 header,585,11,execve(2),0,Wed Mar 27 22:38:09 2024, + 161 msec,exec arg,touch,-a,-m,-t,2403272214.00,timetest.txt,exec env,SSH_CLIENT=10.0.0.4 44938 22,LOGNAME=ec2-user,PAGER=less,LANG=C.UTF-8,MAIL=/var/mail/ec2-user,PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:/home/ec2-user/bin,EDITOR=vi,ENV=/home/ec2-user/.shrc,OLDPWD=/usr/home/ec2-user,PWD=/home/ec2-user,TERM=xterm-256color,SSH_TTY=/dev/pts/1,HOME=/home/ec2-user,USER=ec2-user,SSH_CONNECTION=10.0.0.4 44938 10.0.0.13 22,SHELL=/bin/sh,MM_CHARSET=UTF-8,BLOCKSIZE=K,path,/usr/bin/touch,attribute,555,root,wheel,98,15746,466684,subject,ec2-user,ec2-user,ec2-user,ec2-user,ec2-user,2330,2043,44938,10.0.0.4,return,success,0,trailer,585,
+
+Log generated when deleting a file
+
+header,132,11,unlink(2),0,Thu Mar 28 01:19:00 2024, + 161 msec,path,/usr/home/ec2-user/movetest.txt,attribute,4777,ec2-user,ec2-user,98,402598,914245,subject,ec2-user,ec2-user,ec2-user,ec2-user,ec2-user,1186,1076,59520,10.0.0.4,return,success,0,trailer,132,
+
+
+Log generated when echoing into a file
+
+header,135,11,openat(2) - write,0,Thu Mar 28 01:35:46 2024, + 348 msec,argument,2,0x9,flags,path,/etc/ssh/sshd_config,attribute,644,root,wheel,98,1117,62455,subject,ec2-user,root,wheel,root,wheel,1369,1076,59520,10.0.0.4,return,success,3,trailer,135,
+
+
+Log generated when opening file with a text editor
+
+header,124,11,openat(2) - read,write,create,0,Thu Mar 28 01:39:29 2024, + 725 msec,argument,3,0x180,mode,argument,2,0xb02,flags,path,/etc/ssh/.sshd_config.swp,subject,ec2-user,root,wheel,root,wheel,1429,1076,59520,10.0.0.4,return,success,4,trailer,124,
+
+
+Log generated after closing text editor
+
+header,126,11,unlink(2),0,Thu Mar 28 01:57:55 2024, + 791 msec,path,/etc/ssh/.sshd_config.swp,attribute,644,root,wheel,98,28272,194488,subject,ec2-user,root,wheel,root,wheel,1541,1076,59520,10.0.0.4,return,success,0,trailer,126,
+
+
+Log generated after running crontab -e
+
+header,122,11,openat(2) - read,write,create,0,Thu Mar 28 02:01:45 2024, + 746 msec,argument,3,0x180,mode,argument,2,0xa02,flags,path,/tmp/crontab.pcO7c0q3tk,subject,ec2-user,root,wheel,root,wheel,1626,1076,59520,10.0.0.4,return,success,5,trailer,122,
+
+
+Log generated after setting crontab
+
+header,147,11,rename(2),0,Thu Mar 28 02:02:48 2024, + 305 msec,path,/var/cron/tabs/tmp.1626,attribute,600,root,wheel,98,28268,149118,path,/var/cron/tabs/root,subject,ec2-user,root,wheel,root,wheel,1626,1076,59520,10.0.0.4,return,success,0,trailer,147,
+
+
+Log generated after echoing into crontab
+
+header,134,11,openat(2) - write,0,Thu Mar 28 02:15:00 2024, + 140 msec,argument,2,0x9,flags,path,/var/cron/tabs/root,attribute,600,root,wheel,98,28268,149118,subject,ec2-user,root,wheel,root,wheel,1369,1076,59520,10.0.0.4,return,success,3,trailer,134,
+
+
