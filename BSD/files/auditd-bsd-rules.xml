@@ -401,46 +401,47 @@
   <rule id="100630" level="0">
     <if_sid>100500</if_sid>
     <field name="audit.type">open</field>
-    <description>Group together calls to open</description>
+    <field name="audit.file_opened" negate="yes">\.swpx?$|\.tmp$</field>
+    <description>Group together calls to open.  Don't log opening .swp files or .tmp</description>
   </rule>
   
-  <rule id="100631" level="8">
+  <rule id="100632" level="8">
     <if_sid>100630</if_sid>
-    <field name="audit.file" type="pcre2">conf(\.swp)?$|cfg(\.swp)?$|cf(\.swp)?$|cnf(\.swp)?$|ini(\.swp)?$|config(\.swp)?$</field>
+    <field name="audit.file_opened" type="pcre2">conf$|cfg$|cf$|cnf$|ini$|config$</field>
     <field name="audit.mode">write</field>
-    <description>$(audit.user_actual) opened configuration file $(audit.file) for writing</description>
+    <description>$(audit.user_actual) opened configuration file $(audit.file_opened) for writing</description>
     <mitre>
       <id>T1562.001</id>
     </mitre>
   </rule>
   
-  <rule id="100632" level="12">
+  <rule id="100633" level="12">
     <if_sid>100630</if_sid>
-    <field name="audit.file" type="pcre2">log$|/log/|/audit/</field>
+    <field name="audit.file_opened" type="pcre2">log$|/log/|/audit/</field>
     <field name="audit.mode">write</field>
-    <description>$(audit.user_actual) opened log file $(audit.file) for writing</description>
+    <description>$(audit.user_actual) opened log file $(audit.file_opened) for writing</description>
     <mitre>
       <id>T1070.002</id>
     </mitre>
   </rule>
   
-  <rule id="100633" level="8">
+  <rule id="100634" level="8">
     <if_sid>100630</if_sid>
-    <field name="audit.file" type="pcre2">^/tmp</field>
+    <field name="audit.file_opened" type="pcre2">^/tmp</field>
     <field name="audit.mode">write</field>
-    <description>$(audit.user_actual) opened file $(audit.file) for writing in temp directory</description>
+    <description>$(audit.user_actual) opened file $(audit.file_opened) for writing in temp directory</description>
   </rule>
   
   <rule id="100640" level="0">
     <if_sid>100500</if_sid>
     <field name="audit.type">unlink</field>
-    <description>Group file deletion rules</description>
+    <field name="audit.file_del" negate="yes" type="pcre2">\.swpx?$|\.tmp$|~$</field>
+    <description>Group file deletion rules. Don't log removing temporary backups</description>
   </rule>
   
   <rule id="100641" level="5">
     <if_sid>100640</if_sid>
-    <field name="audit.file" negate="yes">\.swp$|\.tmp$</field>
-    <description>$(audit.user_actual) removed $(audit.file)</description>
+    <description>$(audit.user_actual) removed $(audit.file_del)</description>
   </rule>
   
   <rule id="100650" level="0">

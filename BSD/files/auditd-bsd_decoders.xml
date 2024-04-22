@@ -27,14 +27,14 @@
   <parent>auditbsd</parent>
   <prematch offset="after_parent" type="pcre2">\d+,\d+,open\S+ - (\D+)\d+,([\w\d :]*),.*?,path,.*?,attribute</prematch>
   <regex offset="after_parent" type="pcre2">(\d+),\d+,(open)\S+ - (\D+)\d+,([\w\d :]*),.*?,path,(.*?),attribute,.*?,subject,(.*?),(.*?),(.*?),(.*?),(.*?),(\d+),(\d+),(\d+),(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}),return,(.*?),(\d+)</regex>
-  <order>audit.num,audit.type,audit.mode,audit.time,audit.file,audit.user_actual,audit.user_effective,audit.group_effectve,audit.user_real,audit.group_real,audit.process_id,audit.session_id,audit.rport,audit.rhost,audit.return,audit.return_code</order>
+  <order>audit.num,audit.type,audit.mode,audit.time,audit.file_opened,audit.user_actual,audit.user_effective,audit.group_effectve,audit.user_real,audit.group_real,audit.process_id,audit.session_id,audit.rport,audit.rhost,audit.return,audit.return_code</order>
 </decoder>
 
 <decoder name="auditbsd-open-without-attributes">
   <parent>auditbsd</parent>
   <prematch offset="after_parent" type="pcre2">\d+,\d+,open\S+ - (\D+)\d+,([\w\d :]*),.*?,path,.*?,subject</prematch>
   <regex offset="after_parent" type="pcre2">(\d+),\d+,(open)\S+ - (\D+)\d+,([\w\d :]*),.*?,path,(.*?),subject,(.*?),(.*?),(.*?),(.*?),(.*?),(\d+),(\d+),(\d+),(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}),return,(.*?),(\d+)</regex>
-  <order>audit.num,audit.type,audit.mode,audit.time,audit.file,audit.user_actual,audit.user_effective,audit.group_effectve,audit.user_real,audit.group_real,audit.process_id,audit.session_id,audit.rport,audit.rhost,audit.return,audit.return_code</order>
+  <order>audit.num,audit.type,audit.mode,audit.time,audit.file_opened,audit.user_actual,audit.user_effective,audit.group_effectve,audit.user_real,audit.group_real,audit.process_id,audit.session_id,audit.rport,audit.rhost,audit.return,audit.return_code</order>
 </decoder>
 
 <decoder name="auditbsd-audit-actions">
@@ -76,5 +76,5 @@
   <parent>auditbsd</parent>
   <prematch offset="after_parent">\d+,\d+,unlink</prematch>
   <regex offset="after_parent" type="pcre2">(\d+),\d+,(unlink)\(2\),\d+,([\w\d :]*),.*?,path,(.*?),attribute,.*?,subject,(.*?),(.*?),(.*?),(.*?),(.*?),(\d+),(\d+),(\d+),(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}),return,(.*?),\d+</regex>
-  <order>audit.num,audit.type,audit.time,audit.file,audit.user_actual,audit.user_effective,audit.group_effectve,audit.user_real,audit.group_real,audit.process_id,audit.session_id,audit.rport,audit.rhost,audit.return</order>
+  <order>audit.num,audit.type,audit.time,audit.file_del,audit.user_actual,audit.user_effective,audit.group_effectve,audit.user_real,audit.group_real,audit.process_id,audit.session_id,audit.rport,audit.rhost,audit.return</order>
 </decoder>
